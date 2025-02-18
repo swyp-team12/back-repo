@@ -3,8 +3,7 @@ package Swyp8.Team12.domain.user.entity;
 import Swyp8.Team12.domain.ingredient.entity.Ingredient;
 import Swyp8.Team12.domain.recipe.entity.Recipe;
 import jakarta.persistence.*;
-
-import java.security.Timestamp;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Entity
@@ -16,7 +15,7 @@ public class User {
     @Column(name = "user_id")
     private int userId;
 
-    @Column(name = "social_id", length = 30)
+    @Column(name = "social_id", length = 30, unique = true)
     private String socialId;
 
     @Column(name = "bio")
@@ -25,22 +24,21 @@ public class User {
     @Column(name = "profile_img")
     private String profileImg;
 
-    @Column(name = "user_nickname", length = 30)
+    @Column(name = "user_nickname", length = 30, unique = true)
     private String userNickname;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", updatable = false)
     private Timestamp createdAt;
 
     @Column(name = "updated_at")
     private Timestamp updatedAt;
 
-    @Column(name = "is_delete", columnDefinition = "varchar(1) default '0'")
-    private String isDelete;
+    @Column(name = "is_delete", columnDefinition = "TINYINT(1) default 0")
+    private Boolean isDelete;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Ingredient> ingredients;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Recipe> recipes;
-
 }
