@@ -2,8 +2,7 @@ package Swyp8.Team12.domain.ingredient.entity;
 
 import Swyp8.Team12.domain.user.entity.User;
 import jakarta.persistence.*;
-
-import java.security.Timestamp;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "Ingredients")
@@ -14,10 +13,11 @@ public class Ingredient {
     @Column(name = "ing_id")
     private int ingId;
 
-    @Column(name = "user_id2")
-    private int userId2;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
 
     @Column(name = "expiry_date")
@@ -38,17 +38,12 @@ public class Ingredient {
     @Column(name = "ing_image")
     private String ingImage;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", updatable = false)
     private Timestamp createdAt;
 
     @Column(name = "updated_at")
     private Timestamp updatedAt;
 
-    @Column(name = "is_delete", columnDefinition = "varchar(1) default '0'")
-    private String isDelete;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id2", insertable = false, updatable = false)
-    private User user;
-
+    @Column(name = "is_delete", columnDefinition = "TINYINT(1) default 0")
+    private Boolean isDelete;
 }
