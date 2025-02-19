@@ -17,7 +17,6 @@ public class ApiResponse<T> {
     private String status;
     private T data;
     private String message;
-    private Map<String, Object> additionalData;
 
     public static <T> ApiResponse<T> successResponse(T data) {
         return new ApiResponse<>(SUCCESS_STATUS, data, null);
@@ -58,6 +57,5 @@ public class ApiResponse<T> {
         this.status = status;
         this.data = data;
         this.message = message;
-        this.additionalData = additionalData;
     }
 }
