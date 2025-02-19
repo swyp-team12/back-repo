@@ -44,6 +44,6 @@ public class Ingredient {
     @Column(name = "updated_at")
     private Timestamp updatedAt;
 
-    @Column(name = "is_delete", columnDefinition = "TINYINT(1) default 0")
+    @Column(name = "is_delete")
     private Boolean isDelete;
 }

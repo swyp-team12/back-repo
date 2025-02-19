@@ -26,10 +26,10 @@ public class Recipe {
     @Column(name = "updated_at")
     private Timestamp updatedAt;
 
-    @Column(name = "is_delete", columnDefinition = "TINYINT(1) default 0")
+    @Column(name = "is_delete")
     private Boolean isDelete;
 
-    @Column(name = "is_scrap", columnDefinition = "TINYINT(1) default 0")
+    @Column(name = "is_scrap")
     private Boolean isScrap;
 
     @Column(name = "scrap_time")
