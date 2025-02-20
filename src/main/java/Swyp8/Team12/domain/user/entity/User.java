@@ -70,4 +70,9 @@ public class User {
         this.email = email;
         this.profileImg = profileImg;
     }
+
+    public void updateProfile(String nickname) {
+        this.nickname = nickname;
+        this.updatedAt = new Timestamp(System.currentTimeMillis());
+    }
 }

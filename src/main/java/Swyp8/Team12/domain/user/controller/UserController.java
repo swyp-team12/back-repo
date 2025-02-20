@@ -1,6 +1,8 @@
 package Swyp8.Team12.domain.user.controller;
 
 import Swyp8.Team12.domain.user.dto.KakaoUserInfoDTO;
+import Swyp8.Team12.domain.user.dto.UserProfileResponseDTO;
+import Swyp8.Team12.domain.user.dto.UserProfileUpdateRequestDTO;
 import Swyp8.Team12.domain.user.entity.User;
 import Swyp8.Team12.domain.user.service.KakaoService;
 import Swyp8.Team12.domain.user.service.UserService;
@@ -9,9 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -37,5 +38,29 @@ public class UserController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, accessTokenCookie.toString())
                 .body(ApiResponse.successWithMessage("로그인 성공"));
+    }
+
+    /**
+     *
+     * 내 프로필 조회
+     *
+     **/
+    @GetMapping("profile")
+    ResponseEntity<ApiResponse<?>> getUserProfile(@AuthenticationPrincipal Long userId){
+        UserProfileResponseDTO userProfile = userService.getUserProfile(userId);
+        return ResponseEntity.ok().body(ApiResponse.successResponse(userProfile));
+    }
+
+    /**
+     *
+     * 내 프로필 업데이트
+     *
+     **/
+    @PatchMapping("profile")
+    ResponseEntity<ApiResponse<?>> updateUserProfile(@AuthenticationPrincipal Long userId,
+                                                     @RequestBody UserProfileUpdateRequestDTO userProfileUpdateRequestDTO
+    ){
+        userService.updateUserProfile(userId, userProfileUpdateRequestDTO);
+        return ResponseEntity.ok().body(ApiResponse.successWithMessage("프로필 업데이트 성공"));
     }
 }

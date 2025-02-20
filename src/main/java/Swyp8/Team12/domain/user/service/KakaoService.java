@@ -64,7 +64,6 @@ public class KakaoService {
             if (element.getAsJsonObject().has("access_token")) {
                 accessToken = element.getAsJsonObject().get("access_token").getAsString();
             } else {
-                System.err.println("Error response from Kakao: " + result);
                 throw new RuntimeException("Failed to retrieve access token");
             }
 
@@ -101,7 +100,6 @@ public class KakaoService {
                 responseSb.append(line);
             }
             String result = responseSb.toString();
-            System.out.println("Kakao User Info API Response: " + result);
 
             JsonElement element = JsonParser.parseString(result);
             Long socialId = element.getAsJsonObject().get("id").getAsLong();
