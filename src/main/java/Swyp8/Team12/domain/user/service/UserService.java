@@ -1,10 +1,13 @@
 package Swyp8.Team12.domain.user.service;
 
 import Swyp8.Team12.domain.user.dto.KakaoUserInfoDTO;
+import Swyp8.Team12.domain.user.dto.UserProfileResponseDTO;
+import Swyp8.Team12.domain.user.dto.UserProfileUpdateRequestDTO;
 import Swyp8.Team12.domain.user.entity.User;
 import Swyp8.Team12.domain.user.repository.UserRepository;
 import Swyp8.Team12.global.security.jwt.JwtCookieUtil;
 import Swyp8.Team12.global.security.jwt.JwtTokenProvider;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
@@ -34,4 +37,18 @@ public class UserService {
                     return userRepository.save(newUser);
                 });
     }
+
+    public void updateUserProfile(Long userId, UserProfileUpdateRequestDTO userProfileUpdateRequestDTO) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("유저를 찾을 수 없습니다."));
+        user.updateProfile(userProfileUpdateRequestDTO.getNickname());
+        userRepository.save(user);
+    }
+
+    public UserProfileResponseDTO getUserProfile(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("유저를 찾을 수 없습니다."));
+        return new UserProfileResponseDTO(user.getNickname());
+    }
+
 }
