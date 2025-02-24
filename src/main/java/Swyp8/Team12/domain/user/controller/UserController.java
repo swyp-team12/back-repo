@@ -62,5 +62,5 @@ public class UserController {
     ){
         userService.updateUserProfile(userId, userProfileUpdateRequestDTO);
         return ResponseEntity.ok().body(ApiResponse.successWithMessage("프로필 업데이트 성공"));
-    }
+    }   
 }
