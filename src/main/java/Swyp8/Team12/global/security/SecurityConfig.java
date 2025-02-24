@@ -26,17 +26,7 @@ public class SecurityConfig {
 
     private static final String[] AUTH_WHITELIST = {
             "/user/kakao/**",// 카카오 로그인 콜백 URL
-            "/user/sign-up",
-            "/user/sign-in",
-            "/user/*/meetups/participating/**",
-            "/user/*/reviews/**",
-            "/user/*/meetups/created/**",
-            "/user/profile/*",
-            "/user/reviews/received",
-            "/meetups/list",
-            "/meetups/*",
-            "/wishlist/*",
-            "/reviews/list/**"
+            "/clova/recipe"
     };
 
     @Bean
