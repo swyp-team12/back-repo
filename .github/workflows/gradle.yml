@@ -48,6 +48,9 @@ jobs:
         # echo "cloud.aws.credentials.secret-key=${{ secrets.AWS_SECRET_KEY }}" >> src/main/resources/application.properties
         # echo "cloud.aws.region.static=ap-southeast-2" >> src/main/resources/application.properties
         # echo "cloud.aws.s3.bucket=fesi6" >> src/main/resources/application.properties
+        # NCP 설정
+        echo "ncp.apikey=${{ secrets.NCP_API_KEY }}" >> src/main/resources/application.properties
+        echo "ncp.apiurl=${{ secrets.NCP_API_URL }}" >> src/main/resources/application.properties
         # Server 설정
         echo "server.address=0.0.0.0" >> src/main/resources/application.properties
         echo "server.port=8080" >> src/main/resources/application.properties
