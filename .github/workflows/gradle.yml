@@ -18,8 +18,8 @@ jobs:
         run: |
           curl -LO https://www.ncloud.com/api/support/download/files/cli/CLI_1.1.23_20241121.zip || { echo 'Failed to download ncp-cli'; exit 1; }
           unzip CLI_1.1.23_20241121.zip
-          chmod +x ncp
-          sudo mv ncp /usr/local/bin/
+          chmod +x CLI_1.1.23_20241121/cli_linux/ncp
+          sudo mv CLI_1.1.23_20241121/cli_linux/ncp /usr/local/bin/ncp
           ncp --version  # NCP CLI 버전 확인
 
       - name: Configure NCP credentials
