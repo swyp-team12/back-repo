@@ -14,6 +14,13 @@ jobs:
         id: ip
         uses: haythem/public-ip@v1.3
 
+      - name: Install Java
+        run: |
+          sudo apt update
+          sudo apt install -y openjdk-8-jdk
+          echo "JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64" >> $GITHUB_ENV
+          echo "/usr/lib/jvm/java-8-openjdk-amd64/bin" >> $GITHUB_PATH
+
       - name: Install NCP CLI
         run: |
           curl -LO https://www.ncloud.com/api/support/download/files/cli/CLI_1.1.23_20241121.zip || { echo 'Failed to download ncp-cli'; exit 1; }
