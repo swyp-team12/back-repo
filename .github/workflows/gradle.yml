@@ -19,6 +19,7 @@ jobs:
           curl -LO https://github.com/NaverCloudPlatform/ncp-cli/releases/latest/download/ncp-cli-linux
           chmod +x ncp-cli-linux
           sudo mv ncp-cli-linux /usr/local/bin/ncp
+          ncp --version  # NCP CLI 버전 확인
 
       - name: Configure NCP credentials
         run: |
