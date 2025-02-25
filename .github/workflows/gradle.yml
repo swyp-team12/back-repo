@@ -1,58 +1,59 @@
-name: Deploy to NCP VPC Server
+name: Deploy to NCP
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-    - name: Get GitHub Actions IP
-      id: ip
-      uses: haythem/public-ip@v1.2
+      - name: Get GitHub Action IP
+        id: ip
+        uses: haythem/public-ip@v1.2
 
-    - name: Install Dependencies
-      run: |
-        sudo apt update
-        sudo apt install -y default-jre unzip wget
+      - name: Setting NCP CLI & Credentials
+        run: |
+          cd ~
+          wget https://www.ncloud.com/api/support/download/files/cli/CLI_1.1.23_20241121.zip -O ncp-cli.zip
+          unzip ncp-cli.zip
+          mv CLI_1.1.23_20241121/cli_linux ~/ncp-cli
+          chmod +x ~/ncp-cli/ncloud
+          mkdir -p ~/.ncloud
+          echo -e "[DEFAULT]\nncloud_access_key_id = ${{ secrets.NCP_ACCESS_KEY }}\nncloud_secret_access_key = ${{ secrets.NCP_SECRET_KEY }}\nncloud_api_url = ${{ secrets.NCP_API_URL }}" > ~/.ncloud/configure
 
-    - name: Install NCP CLI (Linux)
-      run: |
-        wget https://www.ncloud.com/api/support/download/files/cli/CLI_1.1.23_20241121.zip -O ncp-cli.zip
-        unzip ncp-cli.zip
-        mv CLI_1.1.23_20241121/cli_linux ~/ncp-cli
-        chmod +x ~/ncp-cli/ncloud
-        echo "export PATH=$PATH:~/ncp-cli" >> ~/.bashrc
-        source ~/.bashrc
-        ls -al ~/ncp-cli  # 설치된 파일 확인
-        ~/ncp-cli/ncloud --version  # 설치 확인
+      - name: Add GitHub Action IP to Security Group
+        run: |
+          chmod -R 777 ~/ncp-cli
+          cd ~/ncp-cli
+          ./ncloud vserver addAccessControlGroupInboundRule \
+            --regionCode KR \
+            --vpcNo ${{ secrets.NCP_VPC_NO }} \
+            --accessControlGroupNo ${{ secrets.NCP_AGC_NO }} \
+            --accessControlGroupRuleList "protocolTypeCode='TCP', ipBlock='${{ steps.ip.outputs.ipv4 }}/32', portRange='${{ secrets.SSH_PORT }}'"
 
-    - name: Add GitHub Actions IP to NCP Security Group
-      run: |
-        ~/ncp-cli/ncloud vpc authorize-security-group-ingress-rule \
-          --access-key ${{ secrets.NCP_ACCESS_KEY }} \
-          --secret-key ${{ secrets.NCP_SECRET_KEY }} \
-          --region KR \
-          --security-group-no ${{ secrets.SECURITY_GROUP_ID }} \
-          --protocol TCP --port-range 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+      - name: Deploy to Server
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            cd ~/your_project_directory
+            ./start.sh
 
-    - name: Deploy via SSH
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.EC2_HOST }}
-        username: ec2-user
-        key: ${{ secrets.EC2_SSH_KEY }}
-        port: 22
-        script: |
-          ./deploy.sh
-
-    - name: Remove GitHub Actions IP from NCP Security Group
-      run: |
-        ~/ncp-cli/ncloud vpc revoke-security-group-ingress-rule \
-          --access-key ${{ secrets.NCP_ACCESS_KEY }} \
-          --secret-key ${{ secrets.NCP_SECRET_KEY }} \
-          --region KR \
-          --security-group-no ${{ secrets.SECURITY_GROUP_ID }} \
-          --protocol TCP --port-range 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+      - name: Remove GitHub Action IP from Security Group
+        run: |
+          chmod -R 777 ~/ncp-cli
+          cd ~/ncp-cli
+          ./ncloud vserver removeAccessControlGroupInboundRule \
+            --regionCode KR \
+            --vpcNo ${{ secrets.NCP_VPC_NO }} \
+            --accessControlGroupNo ${{ secrets.NCP_AGC_NO }} \
+            --accessControlGroupRuleList "protocolTypeCode='TCP', ipBlock='${{ steps.ip.outputs.ipv4 }}/32', portRange='${{ secrets.SSH_PORT }}'"
