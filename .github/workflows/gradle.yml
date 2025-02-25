@@ -27,7 +27,7 @@ jobs:
         mv CLI_1.1.23_20241121/cli_linux ~/ncp-cli
         chmod +x ~/ncp-cli/ncloud
         mkdir -p ~/.ncloud
-        echo -e "[DEFAULT]\nncloud_access_key_id = ${{ secrets.NCP_ACCESS_KEY }}\nncloud_secret_access_key = ${{ secrets.NCP_SECRET_KEY }}\nncloud_api_url = ${{ secrets.NCP_API_URL }}" > ~/.ncloud/configure
+        echo -e "[DEFAULT]\nncloud_access_key_id = ${{ secrets.NCP_ACCESS_KEY }}\nncloud_secret_access_key = ${{ secrets.NCP_SECRET_KEY }}\nncloud_api_url = https://ncloud.apigw.ntruss.com" > ~/.ncloud/configure
 
     - name: Add Github Actions IP to NCP Security Group
       run: |
