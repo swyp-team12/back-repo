@@ -34,16 +34,16 @@ jobs:
           ./ncloud vserver addAccessControlGroupInboundRule \
             --regionCode KR \
             --vpcNo ${{ secrets.NCP_VPC_NO }} \
-            --accessControlGroupNo ${{ SECURITY_GROUP_ID }} \
+            --accessControlGroupNo ${{ secrets.NCP_AGC_NO }} \
             --accessControlGroupRuleList "protocolTypeCode='TCP', ipBlock='${{ steps.ip.outputs.ipv4 }}/32', portRange='${{ secrets.SSH_PORT }}'"
 
       - name: Deploy to Server
         uses: appleboy/ssh-action@v0.1.6
         with:
-          host: ${{ secrets.SSH_HOST }}
+          host: ${{ secrets.EC2_HOST }}
           port: ${{ secrets.SSH_PORT }}
-          username: ${{ secrets.SSH_USERNAME }}
-          password: ${{ secrets.SSH_PASSWORD }}
+          username: ${{ secrets.EC2_USERNAME }}  # 여기에 EC2_USERNAME을 추가하세요
+          key: ${{ secrets.EC2_SSH_KEY }}  # PEM 키 사용
           script: |
             cd ~/your_project_directory
             ./start.sh
@@ -54,6 +54,6 @@ jobs:
           cd ~/ncp-cli
           ./ncloud vserver removeAccessControlGroupInboundRule \
             --regionCode KR \
-            --vpcNo ${{ SECURITY_GROUP_ID }} \
-            --accessControlGroupNo ${{ SECURITY_GROUP_ID }} \
+            --vpcNo ${{ secrets.NCP_VPC_NO }} \
+            --accessControlGroupNo ${{ secrets.NCP_AGC_NO }} \
             --accessControlGroupRuleList "protocolTypeCode='TCP', ipBlock='${{ steps.ip.outputs.ipv4 }}/32', portRange='${{ secrets.SSH_PORT }}'"
