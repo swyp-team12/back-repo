@@ -18,14 +18,15 @@ jobs:
         sudo apt update
         sudo apt install -y default-jre unzip wget
 
-    - name: Install NCP CLI
+    - name: Install NCP CLI (Linux)
       run: |
-        wget https://www.ncloud.com/api/support/download/files/cli/CLI_1.1.23_20241121.zip
-        unzip CLI_1.1.23_20241121.zip
+        wget https://www.ncloud.com/api/support/download/files/cli/CLI_1.1.23_20241121.zip -O ncp-cli.zip
+        unzip ncp-cli.zip
         mv CLI_1.1.23_20241121/cli_linux ~/ncp-cli
         chmod +x ~/ncp-cli/ncloud
         echo "export PATH=$PATH:~/ncp-cli" >> ~/.bashrc
         source ~/.bashrc
+        ls -al ~/ncp-cli  # 설치된 파일 확인
         ~/ncp-cli/ncloud --version  # 설치 확인
 
     - name: Add GitHub Actions IP to NCP Security Group
