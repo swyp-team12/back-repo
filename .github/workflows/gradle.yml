@@ -14,6 +14,12 @@ jobs:
         id: ip
         uses: haythem/public-ip@v1.3
 
+      - name: Install NCP CLI
+        run: |
+          curl -s -o ncp-cli.tar.gz https://github.com/NaverCloudPlatform/ncp-cli/releases/latest/download/ncp-cli-linux.tar.gz
+          tar -xzf ncp-cli.tar.gz
+          sudo mv ncp /usr/local/bin/
+
       - name: Configure NCP credentials
         run: |
           echo "NCP_ACCESS_KEY=${{ secrets.NCP_ACCESS_KEY }}" >> $GITHUB_ENV
@@ -44,7 +50,6 @@ jobs:
             chmod +x project.jar  # 실행 권한 부여
             nohup java -jar project.jar > ./output.log 2>&1 &  # 백그라운드 실행
             rm -rf /home/ec2-user/yomi-backend/tobe  # 불필요한 폴더 삭제
-
 
       - name: Remove GitHub Actions IP from NCP Security Group
         run: |
