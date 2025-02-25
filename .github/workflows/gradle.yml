@@ -70,11 +70,13 @@ jobs:
     - name: SCP로 EC2에 빌드된 파일 전송하기
       uses: appleboy/scp-action@v0.1.7
       with:
-        host: ${{ secrets.EC2_HOST }}  # EC2 호스트 주소
-        username: ${{ secrets.EC2_USERNAME }}  # EC2 사용자 이름
-        key: ${{ secrets.EC2_SSH_KEY }}  # EC2 비공개 키
-        source: project.jar  # 빌드된 JAR 파일 경로
-        target: /home/ec2-user/yomi-backend/tobe  # 배포될 폴더
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USERNAME }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        source: project.jar
+        target: /home/ec2-user/yomi-backend/tobe
+        port: 22
+        debug: true  # 디버그 활성화
 
     - name: SSH로 EC2에 접속하여 배포하기
       uses: appleboy/ssh-action@v1.0.3
