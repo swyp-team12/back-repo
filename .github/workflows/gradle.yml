@@ -16,9 +16,9 @@ jobs:
 
       - name: Install NCP CLI
         run: |
-          curl -s -o ncp-cli.tar.gz https://github.com/NaverCloudPlatform/ncp-cli/releases/latest/download/ncp-cli-linux.tar.gz
-          tar -xzf ncp-cli.tar.gz
-          sudo mv ncp /usr/local/bin/
+          curl -LO https://github.com/NaverCloudPlatform/ncp-cli/releases/latest/download/ncp-cli-linux
+          chmod +x ncp-cli-linux
+          sudo mv ncp-cli-linux /usr/local/bin/ncp
 
       - name: Configure NCP credentials
         run: |
