@@ -13,21 +13,20 @@ jobs:
       id: ip
       uses: haythem/public-ip@v1.2
 
-    - name: Configure NCP CLI
+    - name: Install NCP CLI
       run: |
-        echo "${{ secrets.NCP_ACCESS_KEY }}" > ~/ncp-access-key
-        echo "${{ secrets.NCP_SECRET_KEY }}" > ~/ncp-secret-key
-        echo "NCP_ACCESS_KEY=$(cat ~/ncp-access-key)" >> $GITHUB_ENV
-        echo "NCP_SECRET_KEY=$(cat ~/ncp-secret-key)" >> $GITHUB_ENV
+        sudo apt update && sudo apt install -y python3-pip
+        pip3 install ncloud-cli
 
     - name: Add GitHub Actions IP to NCP Security Group
       run: |
-        ncp --access-key $NCP_ACCESS_KEY --secret-key $NCP_SECRET_KEY \
-        vpc authorize-security-group-ingress-rule \
-        --region ap-northeast-2 \
-        --security-group-no ${{ secrets.SECURITY_GROUP_ID }} \
-        --protocol TCP --port-range 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
-    
+        ncloud vpc authorize-security-group-ingress-rule \
+          --access-key ${{ secrets.NCP_ACCESS_KEY }} \
+          --secret-key ${{ secrets.NCP_SECRET_KEY }} \
+          --region KR \
+          --security-group-no ${{ secrets.SECURITY_GROUP_ID }} \
+          --protocol TCP --port-range 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+
     - name: Deploy via SSH
       uses: appleboy/ssh-action@master
       with:
@@ -40,8 +39,9 @@ jobs:
 
     - name: Remove GitHub Actions IP from NCP Security Group
       run: |
-        ncp --access-key $NCP_ACCESS_KEY --secret-key $NCP_SECRET_KEY \
-        vpc revoke-security-group-ingress-rule \
-        --region ap-northeast-2 \
-        --security-group-no ${{ secrets.SECURITY_GROUP_ID }} \
-        --protocol TCP --port-range 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+        ncloud vpc revoke-security-group-ingress-rule \
+          --access-key ${{ secrets.NCP_ACCESS_KEY }} \
+          --secret-key ${{ secrets.NCP_SECRET_KEY }} \
+          --region KR \
+          --security-group-no ${{ secrets.SECURITY_GROUP_ID }} \
+          --protocol TCP --port-range 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
