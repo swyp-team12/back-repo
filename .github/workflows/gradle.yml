@@ -18,8 +18,8 @@ jobs:
         run: |
           curl -LO https://www.ncloud.com/api/support/download/files/cli/CLI_1.1.23_20241121.zip || { echo 'Failed to download ncp-cli'; exit 1; }
           unzip CLI_1.1.23_20241121.zip
-          chmod +x CLI_1.23_20241121/cli_linux/ncloud  # ncloud 파일에 실행 권한 부여
-          sudo mv CLI_1.23_20241121/cli_linux/ncloud /usr/local/bin/ncp  # 파일 이동
+          chmod +x CLI_1.23_20241121/CLI_1.1.23_20241121/cli_linux/ncloud  # ncloud 파일에 실행 권한 부여
+          sudo mv CLI_1.23_20241121/CLI_1.1.23_20241121/cli_linux/ncloud /usr/local/bin/ncp  # 파일 이동
           ncp --version  # NCP CLI 버전 확인
 
       - name: Configure NCP credentials
