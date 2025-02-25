@@ -1,4 +1,4 @@
-name: Deploy to NCP
+name: Get Public IP
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  deploy:
+  get-ip:
     runs-on: ubuntu-latest
 
     steps:
@@ -14,57 +14,5 @@ jobs:
         id: ip
         uses: haythem/public-ip@v1.3
 
-      - name: Install Java
-        run: |
-          sudo apt update
-          sudo apt install -y openjdk-8-jdk
-          echo "JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64" >> $GITHUB_ENV
-          echo "/usr/lib/jvm/java-8-openjdk-amd64/bin" >> $GITHUB_PATH
-
-      - name: Install NCP CLI
-        run: |
-          curl -LO https://www.ncloud.com/api/support/download/files/cli/CLI_1.1.23_20241121.zip || { echo 'Failed to download ncp-cli'; exit 1; }
-          unzip CLI_1.1.23_20241121.zip
-          ls CLI_1.1.23_20241121/cli_linux  # ncloud 파일 위치 확인
-          chmod +x CLI_1.1.23_20241121/cli_linux/ncloud  # ncloud 파일에 실행 권한 부여
-          sudo mv CLI_1.1.23_20241121/cli_linux/ncloud /usr/local/bin/ncp  # 파일 이동
-          ncp --version  # NCP CLI 버전 확인
-
-      - name: Configure NCP credentials
-        run: |
-          echo "NCP_ACCESS_KEY=${{ secrets.NCP_ACCESS_KEY }}" >> $GITHUB_ENV
-          echo "NCP_SECRET_KEY=${{ secrets.NCP_SECRET_KEY }}" >> $GITHUB_ENV
-
-      - name: Add GitHub Actions IP to NCP Security Group
-        run: |
-          ncp security group authorize-ingress \
-              --group-id ${{ secrets.SECURITY_GROUP_ID }} \
-              --protocol tcp \
-              --port 22 \
-              --cidr ${{ steps.ip.outputs.ipv4 }}/32
-
-      - name: Deploy application
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script_stop: true
-          script: |
-            # 기존 서버 중지 및 새 JAR 파일 실행
-            rm -rf /home/ec2-user/yomi-backend/current
-            mkdir /home/ec2-user/yomi-backend/current
-            mv /home/ec2-user/yomi-backend/tobe/project.jar /home/ec2-user/yomi-backend/current/project.jar
-            cd /home/ec2-user/yomi-backend/current
-            sudo lsof -t -i:8080 | xargs kill -9 || true  # 8080 포트 점유 프로세스 종료
-            chmod +x project.jar  # 실행 권한 부여
-            nohup java -jar project.jar > ./output.log 2>&1 &  # 백그라운드 실행
-            rm -rf /home/ec2-user/yomi-backend/tobe  # 불필요한 폴더 삭제
-
-      - name: Remove GitHub Actions IP from NCP Security Group
-        run: |
-          ncp security group revoke-ingress \
-              --group-id ${{ secrets.SECURITY_GROUP_ID }} \
-              --protocol tcp \
-              --port 22 \
-              --cidr ${{ steps.ip.outputs.ipv4 }}/32
+      - name: Display Public IP
+        run: echo "Current Public IP: ${{ steps.ip.outputs.ipv4 }}"
