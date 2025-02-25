@@ -15,12 +15,17 @@ jobs:
 
     - name: Install NCP CLI
       run: |
-        sudo apt update && sudo apt install -y python3-pip
-        pip3 install ncloud-cli
+        wget https://www.ncloud.com/api/support/download/files/cli/CLI_1.1.23_20241121.zip
+        unzip CLI_1.1.23_20241121.zip
+        mv CLI_1.1.23_20241121/cli_linux ~/ncp-cli
+        chmod +x ~/ncp-cli/ncloud
+        echo "export PATH=$PATH:~/ncp-cli" >> ~/.bashrc
+        source ~/.bashrc
+        ~/ncp-cli/ncloud --version  # 설치 확인
 
     - name: Add GitHub Actions IP to NCP Security Group
       run: |
-        ncloud vpc authorize-security-group-ingress-rule \
+        ~/ncp-cli/ncloud vpc authorize-security-group-ingress-rule \
           --access-key ${{ secrets.NCP_ACCESS_KEY }} \
           --secret-key ${{ secrets.NCP_SECRET_KEY }} \
           --region KR \
@@ -39,7 +44,7 @@ jobs:
 
     - name: Remove GitHub Actions IP from NCP Security Group
       run: |
-        ncloud vpc revoke-security-group-ingress-rule \
+        ~/ncp-cli/ncloud vpc revoke-security-group-ingress-rule \
           --access-key ${{ secrets.NCP_ACCESS_KEY }} \
           --secret-key ${{ secrets.NCP_SECRET_KEY }} \
           --region KR \
