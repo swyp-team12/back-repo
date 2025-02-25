@@ -37,7 +37,7 @@ jobs:
           --regionCode KR \
           --vpcNo ${{ secrets.NCP_VPC_NO }} \
           --accessControlGroupNo ${{ secrets.NCP_AGC_NO }} \
-          --accessControlGroupRuleList 'protocolType="TCP",ipBlock="${{ steps.ip.outputs.ipv4 }}/32",portRange="22"'
+          --accessControlGroupRuleList "protocolTypeCode=TCP;ipBlock=${{ steps.ip.outputs.ipv4 }}/32;portRange=22"
 
     - name: Set up JDK 17
       uses: actions/setup-java@v4
