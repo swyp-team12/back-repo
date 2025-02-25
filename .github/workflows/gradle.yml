@@ -57,10 +57,18 @@ jobs:
 
     # - name: 테스트 및 빌드하기
     #   run: ./gradlew clean build
+    - name: 빌드된 파일 목록 확인 (빌드 전)
+      run: ls -al ./build/libs/ || echo "빌드된 파일 없음"
+
+    - name: 빌드만 수행하기 (테스트 제외)
+      run: ./gradlew clean build -x test
+
+    - name: 빌드된 파일 목록 확인 (빌드 후)
+      run: ls -al ./build/libs/
 
     - name: 빌드된 파일 이름 변경하기
-      run: mv ./build/libs/*SNAPSHOT.jar ./project.jar
-        
+      run: mv $(find ./build/libs/ -name "*.jar" | head -n 1) ./project.jar
+
     - name: SCP로 EC2에 빌드된 파일 전송하기
       uses: appleboy/scp-action@v0.1.7
       with:
