@@ -31,6 +31,7 @@ jobs:
         run: |
           chmod -R 777 ~/ncp-cli
           cd ~/ncp-cli
+          echo "./ncloud vserver addAccessControlGroupInboundRule --regionCode KR --vpcNo ${{ secrets.NCP_VPC_NO }} --accessControlGroupNo ${{ secrets.NCP_AGC_NO }} --accessControlGroupRuleList \"protocolType=TCP;ipBlock=${{ steps.ip.outputs.ipv4 }}/32;portRange=${{ secrets.SSH_PORT }}\""
           ./ncloud vserver addAccessControlGroupInboundRule \
             --regionCode KR \
             --vpcNo ${{ secrets.NCP_VPC_NO }} \
@@ -42,7 +43,7 @@ jobs:
         with:
           host: ${{ secrets.EC2_HOST }}
           port: ${{ secrets.SSH_PORT }}
-          username: ${{ secrets.EC2_USERNAME }}  # EC2_USERNAME을 추가하세요
+          username: ${{ secrets.EC2_USERNAME }} 
           key: ${{ secrets.EC2_SSH_KEY }}  # PEM 키 사용
           script: |
             cd ~/your_project_directory
@@ -52,6 +53,7 @@ jobs:
         run: |
           chmod -R 777 ~/ncp-cli
           cd ~/ncp-cli
+          echo "./ncloud vserver removeAccessControlGroupInboundRule --regionCode KR --vpcNo ${{ secrets.NCP_VPC_NO }} --accessControlGroupNo ${{ secrets.NCP_AGC_NO }} --accessControlGroupRuleList \"protocolType=TCP;ipBlock=${{ steps.ip.outputs.ipv4 }}/32;portRange=${{ secrets.SSH_PORT }}\""
           ./ncloud vserver removeAccessControlGroupInboundRule \
             --regionCode KR \
             --vpcNo ${{ secrets.NCP_VPC_NO }} \
