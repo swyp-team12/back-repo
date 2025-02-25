@@ -16,7 +16,7 @@ jobs:
 
       - name: Install NCP CLI
         run: |
-          curl -LO https://github.com/NaverCloudPlatform/ncp-cli/releases/latest/download/ncp-cli-linux
+          curl -LO https://github.com/NaverCloudPlatform/ncp-cli/releases/latest/download/ncp-cli-linux || { echo 'Failed to download ncp-cli'; exit 1; }
           chmod +x ncp-cli-linux
           sudo mv ncp-cli-linux /usr/local/bin/ncp
           ncp --version  # NCP CLI 버전 확인
