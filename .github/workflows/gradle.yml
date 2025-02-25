@@ -33,6 +33,13 @@ jobs:
       run: |
         chmod -R 777 ~/ncp-cli
         cd ~/ncp-cli
+        
+        echo "Adding IP to NCP Security Group..."
+        echo "Region Code: KR"
+        echo "VPC No: ${{ secrets.NCP_VPC_NO }}"
+        echo "Access Control Group No: ${{ secrets.NCP_AGC_NO }}"
+        echo "IP Block: ${{ steps.ip.outputs.ipv4 }}/32"
+        
         ./ncloud vserver addAccessControlGroupInboundRule \
           --regionCode KR \
           --vpcNo ${{ secrets.NCP_VPC_NO }} \
