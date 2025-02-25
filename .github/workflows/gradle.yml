@@ -11,8 +11,4 @@ jobs:
 
     steps:
       - name: Get Public IP
-        id: ip
-        uses: haythem/public-ip@v1.3
-
-      - name: Display Public IP
-        run: echo "Current Public IP: ${{ steps.ip.outputs.ipv4 }}"
+        run: curl -s https://api.ipify.org
