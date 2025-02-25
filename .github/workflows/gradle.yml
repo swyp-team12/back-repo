@@ -42,7 +42,7 @@ jobs:
         with:
           host: ${{ secrets.EC2_HOST }}
           port: ${{ secrets.SSH_PORT }}
-          username: ${{ secrets.EC2_USERNAME }}  # 여기에 EC2_USERNAME을 추가하세요
+          username: ${{ secrets.EC2_USERNAME }}  # EC2_USERNAME을 추가하세요
           key: ${{ secrets.EC2_SSH_KEY }}  # PEM 키 사용
           script: |
             cd ~/your_project_directory
@@ -56,4 +56,4 @@ jobs:
             --regionCode KR \
             --vpcNo ${{ secrets.NCP_VPC_NO }} \
             --accessControlGroupNo ${{ secrets.NCP_AGC_NO }} \
-            --accessControlGroupRuleList "protocolTypeCode='TCP', ipBlock='${{ steps.ip.outputs.ipv4 }}/32', portRange='${{ secrets.SSH_PORT }}'"
+            --accessControlGroupRuleList "protocolType=TCP;ipBlock=${{ steps.ip.outputs.ipv4 }}/32;portRange=${{ secrets.SSH_PORT }}"
