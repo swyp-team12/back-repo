@@ -35,6 +35,7 @@ dependencies {
 	implementation 'javax.servlet:javax.servlet-api:4.0.1'
 	implementation 'org.jboss.logging:jboss-logging:3.5.3.Final'
 	implementation 'mysql:mysql-connector-java:8.0.33'
+	implementation 'com.amazonaws:aws-java-sdk-s3:1.12.262'
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.h2database:h2'
 	runtimeOnly 'com.mysql:mysql-connector-j'
