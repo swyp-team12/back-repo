@@ -2,16 +2,19 @@ package Swyp8.Team12.domain.ingredient.entity;
 
 import Swyp8.Team12.domain.user.entity.User;
 import jakarta.persistence.*;
+import lombok.Getter;
+
 import java.sql.Timestamp;
 
 @Entity
+@Getter
 @Table(name = "Ingredients")
 public class Ingredient {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ing_id")
-    private int ingId;
+    private Long ingId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)

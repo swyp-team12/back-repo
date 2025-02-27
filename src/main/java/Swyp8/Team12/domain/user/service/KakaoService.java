@@ -73,7 +73,6 @@ public class KakaoService {
             e.printStackTrace();
         }
 
-        System.out.println("accessToken = " + accessToken);
         return accessToken;
     }
 

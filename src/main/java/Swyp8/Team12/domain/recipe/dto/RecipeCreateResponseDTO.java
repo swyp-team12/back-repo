@@ -8,12 +8,12 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class RecipeResponseDTO {
+public class RecipeCreateResponseDTO {
     private String name;
     private List<String> ingredient;
     private String recipe;
 
-    public RecipeResponseDTO(String name, List<String> ingredient, String recipe) {
+    public RecipeCreateResponseDTO(String name, List<String> ingredient, String recipe) {
         this.name = name;
         this.ingredient = ingredient;
         this.recipe = recipe;

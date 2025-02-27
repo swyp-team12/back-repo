@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -51,4 +53,8 @@ public class UserService {
         return new UserProfileResponseDTO(user.getNickname());
     }
 
+    public User getUserById(Long userId) {
+        Optional<User> userOptional = userRepository.findById(userId);
+        return userOptional.orElseThrow(() -> new RuntimeException("해당 유저를 찾을 수 없습니다: " + userId));
+    }
 }

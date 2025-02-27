@@ -25,8 +25,7 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     private static final String[] AUTH_WHITELIST = {
-            "/user/kakao/**",// 카카오 로그인 콜백 URL
-            "/clova/test"
+            "/api/user/kakao/callback" // 카카오 로그인 콜백 URL
     };
 
     @Bean
@@ -55,9 +54,7 @@ public class SecurityConfig {
 
         configuration.setAllowedOrigins(List.of(
                 "http://localhost:3000",
-                "https://localhost:3000",
-                "https://mogua-g109cgdv1-joshuayeyos-projects.vercel.app",
-                "https://mogua.vercel.app"
+                "https://localhost:3000"
         ));
 
         // 모든 HTTP 메서드 허용

@@ -9,6 +9,7 @@ import Swyp8.Team12.domain.user.service.UserService;
 import Swyp8.Team12.global.common.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/user")
+@RequestMapping("/api/user")
 public class UserController {
 
     private final UserService userService;
@@ -35,8 +36,9 @@ public class UserController {
         User user = userService.kakaoSave(kakaoUserInfoDto);
         ResponseCookie accessTokenCookie = userService.createAccessTokenCookie(user.getId());
 
-        return ResponseEntity.ok()
+        return ResponseEntity.status(HttpStatus.FOUND)  // 302 Found
                 .header(HttpHeaders.SET_COOKIE, accessTokenCookie.toString())
+                .header(HttpHeaders.LOCATION, "http://localhost:3000/home")  // 프론트엔드 리다이렉트 URL -> 배포 시에 도메인으로 수정
                 .body(ApiResponse.successWithMessage("로그인 성공"));
     }
 
