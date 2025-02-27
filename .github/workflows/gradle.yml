@@ -33,7 +33,7 @@ jobs:
       run: |
         chmod -R 777 ~/ncp-cli
         cd ~/ncp-cli
-
+    
         ./ncloud vserver addAccessControlGroupInboundRule \
           --regionCode KR \
           --vpcNo ${{ secrets.NCP_VPC_NO }} \
