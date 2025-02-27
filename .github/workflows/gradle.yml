@@ -84,6 +84,7 @@ jobs:
       uses: appleboy/scp-action@v0.1.7
       with:
         host: ${{ secrets.EC2_HOST }}  # NCP 호스트 주소
+        INPUT_USERNAME: ${{ secrets.SSH_USERNAME }} # SSH_USERNAME은 Secrets에 설정한 사용자 이름
         key: ${{ secrets.EC2_SSH_KEY }}  # NCP 비공개 키
         source: project.jar  # 빌드된 JAR 파일 경로
         target: /home/ncp-user/yomi-backend/tobe  # 배포될 폴더
@@ -92,7 +93,7 @@ jobs:
       uses: appleboy/ssh-action@v1.0.3
       with:
         host: ${{ secrets.NCP_HOST }}
-        username: ${{ secrets.NCP_USERNAME }}
+        username: ${{ secrets.SSH_USERNAME }}
         key: ${{ secrets.NCP_SSH_KEY }}
         script_stop: true
         script: |
