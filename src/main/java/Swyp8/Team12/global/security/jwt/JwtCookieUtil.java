@@ -8,7 +8,7 @@ public class JwtCookieUtil {
 
     public ResponseCookie createAccessTokenCookie(String accessToken) {
         return ResponseCookie.from("accessToken", accessToken)
-                .httpOnly(true)
+                .httpOnly(false)
                 .secure(true)
                 .path("/")
                 .maxAge(60 * 15)  // 15분

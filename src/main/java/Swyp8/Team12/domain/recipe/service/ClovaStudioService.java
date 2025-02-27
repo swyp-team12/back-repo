@@ -1,8 +1,9 @@
 package Swyp8.Team12.domain.recipe.service;
 
-import Swyp8.Team12.domain.recipe.dto.RecipeResponseDTO;
+import Swyp8.Team12.domain.recipe.dto.RecipeCreateResponseDTO;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.*;
 
 @Service
+@RequiredArgsConstructor
 public class ClovaStudioService {
 
     @Value("${ncp.apiurl}")
@@ -21,13 +23,10 @@ public class ClovaStudioService {
 
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
+    private final RecipeService recipeService;
 
-    public ClovaStudioService(RestTemplate restTemplate, ObjectMapper objectMapper) {
-        this.restTemplate = restTemplate;
-        this.objectMapper = objectMapper;
-    }
+    public List<RecipeCreateResponseDTO> getRecipe(String userInput, Long userId) {
 
-    public List<RecipeResponseDTO> getRecipe(String userInput) {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + API_KEY);
         headers.set("X-NCP-CLOVASTUDIO-REQUEST-ID", UUID.randomUUID().toString());
@@ -54,10 +53,7 @@ public class ClovaStudioService {
 
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
 
-        // API 요청
         ResponseEntity<String> response = restTemplate.exchange(API_URL, HttpMethod.POST, entity, String.class);
-        System.out.println("API Response: " + response);
-        // 응답 상태 코드 체크
         if (response.getStatusCode() != HttpStatus.OK) {
             throw new RuntimeException("API 요청 실패: " + response.getStatusCode());
         }
@@ -75,15 +71,15 @@ public class ClovaStudioService {
             List<Map<String, Object>> recipes = objectMapper.readValue(content, new TypeReference<List<Map<String, Object>>>() {});
 
             // List<RecipeResponseDTO>로 변환
-            List<RecipeResponseDTO> recipeList = new ArrayList<>();
+            List<RecipeCreateResponseDTO> recipeList = new ArrayList<>();
             for (Map<String, Object> recipe : recipes) {
-                RecipeResponseDTO dto = new RecipeResponseDTO();
+                RecipeCreateResponseDTO dto = new RecipeCreateResponseDTO();
                 dto.setName((String) recipe.get("name"));
                 dto.setIngredient((List<String>) recipe.get("ingredient"));
                 dto.setRecipe((String) recipe.get("recipe"));
                 recipeList.add(dto);
             }
-
+            recipeService.save(recipeList, userId);
             return recipeList;
         } catch (Exception e) {
             e.printStackTrace();
