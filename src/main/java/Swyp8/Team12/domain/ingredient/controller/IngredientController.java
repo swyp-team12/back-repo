@@ -80,40 +80,4 @@ public class IngredientController {
         return ResponseEntity.ok()
                 .body(ApiResponse.successWithMessage("재료 삭제 성공"));
     }
-
-    /**
-     * 카테고리별 재료 조회
-     */
-    @GetMapping("/category/{category}")
-    public ResponseEntity<ApiResponse<?>> getIngredientsByCategory(
-            @PathVariable String category,
-            @AuthenticationPrincipal Long userId) {
-        List<IngredientResponseDTO> ingredients = ingredientService.getIngredientsByCategory(category, userId);
-        return ResponseEntity.ok()
-                .body(ApiResponse.successResponse(ingredients));
-    }
-
-    /**
-     * 보관 타입별 재료 조회 (냉장/냉동)
-     */
-    @GetMapping("/storage-type/{storageType}")
-    public ResponseEntity<ApiResponse<?>> getIngredientsByStorageType(
-            @PathVariable String storageType,
-            @AuthenticationPrincipal Long userId) {
-        List<IngredientResponseDTO> ingredients = ingredientService.getIngredientsByStorageType(storageType, userId);
-        return ResponseEntity.ok()
-                .body(ApiResponse.successResponse(ingredients));
-    }
-
-    /**
-     * 유통기한이 임박한 재료 조회
-     */
-    @GetMapping("/expiry-date")
-    public ResponseEntity<ApiResponse<?>> getIngredientsWithExpiryDateBefore(
-            @RequestParam String expiryDate,
-            @AuthenticationPrincipal Long userId) {
-        List<IngredientResponseDTO> ingredients = ingredientService.getIngredientsWithExpiryDateBefore(expiryDate, userId);
-        return ResponseEntity.ok()
-                .body(ApiResponse.successResponse(ingredients));
-    }
 }
