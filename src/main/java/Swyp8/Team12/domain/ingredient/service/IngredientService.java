@@ -28,7 +28,6 @@ public class IngredientService {
     public List<IngredientResponseDTO> getIngredientsByUserId(Long userId) {
         User user = getUserById(userId);
         List<Ingredient> ingredients = ingredientRepository.findByUserAndIsDeleteFalse(user);
-        
         return ingredients.stream()
                 .map(IngredientResponseDTO::new)
                 .collect(Collectors.toList());
@@ -101,42 +100,6 @@ public class IngredientService {
                 .orElseThrow(() -> new EntityNotFoundException("재료를 찾을 수 없습니다."));
         
         ingredient.delete();
-    }
-
-    /**
-     * 카테고리별 재료 조회
-     */
-    public List<IngredientResponseDTO> getIngredientsByCategory(String category, Long userId) {
-        User user = getUserById(userId);
-        List<Ingredient> ingredients = ingredientRepository.findByUserAndCategoryAndIsDeleteFalse(user, category);
-        
-        return ingredients.stream()
-                .map(IngredientResponseDTO::new)
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * 보관 타입별 재료 조회 (냉장/냉동)
-     */
-    public List<IngredientResponseDTO> getIngredientsByStorageType(String storageType, Long userId) {
-        User user = getUserById(userId);
-        List<Ingredient> ingredients = ingredientRepository.findByUserAndStorageTypeAndIsDeleteFalse(user, storageType);
-        
-        return ingredients.stream()
-                .map(IngredientResponseDTO::new)
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * 유통기한이 임박한 재료 조회
-     */
-    public List<IngredientResponseDTO> getIngredientsWithExpiryDateBefore(String expiryDate, Long userId) {
-        User user = getUserById(userId);
-        List<Ingredient> ingredients = ingredientRepository.findByUserAndExpiryDateLessThanEqualAndIsDeleteFalse(user, expiryDate);
-        
-        return ingredients.stream()
-                .map(IngredientResponseDTO::new)
-                .collect(Collectors.toList());
     }
 
     /**
