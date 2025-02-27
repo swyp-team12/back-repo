@@ -40,9 +40,9 @@ jobs:
         # ACG에 IP 추가
         ./ncloud vserver addAccessControlGroupInboundRule \
           --regionCode KR \
-          --vpcNo ${{ secrets.NCP_VPC_NO }} \
-          --accessControlGroupNo ${{ secrets.NCP_AGC_NO }} \
-          --accessControlGroupRuleList "protocolTypeCode='TCP',ipBlock='${{ steps.ip.outputs.ipv4 }}/32',portRange='22'"
+          --vpcNo 93775 \
+          --accessControlGroupNo 241572 \
+          --accessControlGroupRuleList "protocolTypeCode='TCP',ipBlock='172.174.222.128/32',portRange='22'"
 
     - name: Set up JDK 17
       uses: actions/setup-java@v4
