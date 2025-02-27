@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 @Setter
 @NoArgsConstructor
 public class IngredientResponseDTO {
-    private int ingId;
+    private Long ingId;
     private String name;
     private String expiryDate;
     private String category;
