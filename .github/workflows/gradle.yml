@@ -34,6 +34,10 @@ jobs:
         chmod -R 777 ~/ncp-cli
         cd ~/ncp-cli
     
+        # ncloud CLI 버전 확인
+        ./ncloud --version
+    
+        # ACG에 IP 추가
         ./ncloud vserver addAccessControlGroupInboundRule \
           --regionCode KR \
           --vpcNo ${{ secrets.NCP_VPC_NO }} \
