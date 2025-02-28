@@ -118,7 +118,7 @@ jobs:
           cd /home/ncp-user/yomi-backend/current
           
           # 포트 점유 프로세스 종료
-          PORT=8080  # 실제 포트 번호로 설정하세요
+          PORT=17443  # 실제 포트 번호로 설정하세요
           echo "Killing process using port $PORT..."
           
           # lsof로 포트 점유 프로세스 확인 및 종료
@@ -128,7 +128,6 @@ jobs:
           else
             echo "No process found using port $PORT."
           fi
-          
           # 실행 권한 부여
           chmod +x project.jar  # 실행 권한 부여
           
