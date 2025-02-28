@@ -105,47 +105,14 @@ jobs:
         key: ${{ secrets.NCP_SSH_KEY }}
         script_stop: true
         script: |
-          echo "Starting deployment process..."
-          
-          # 기존 서버 중지
-          echo "Removing previous deployment..."
+          # 기존 서버 중지 및 새 JAR 파일 실행
           rm -rf /home/ncp-user/yomi-backend/current
           mkdir /home/ncp-user/yomi-backend/current
-          
-          # 배포할 파일 확인 후 이동
-          if [ -f /home/ncp-user/yomi-backend/tobe/project.jar ]; then
-            mv /home/ncp-user/yomi-backend/tobe/project.jar /home/ncp-user/yomi-backend/current/project.jar
-            echo "Moved project.jar to current directory."
-          else
-            echo "Error: project.jar not found in /home/ncp-user/yomi-backend/tobe."
-            exit 1
-          fi
-          
+          mv /home/ncp-user/yomi-backend/tobe/project.jar /home/ncp-user/yomi-backend/current/project.jar
           cd /home/ncp-user/yomi-backend/current
-          
-          # 포트 점유 프로세스 종료
-          PORT=17443  # 실제 포트 번호로 설정하세요
-          echo "Killing process using port $PORT..."
-          
-          # lsof로 포트 점유 프로세스 확인 및 종료
-          if lsof -t -i:$PORT > /dev/null; then
-            sudo lsof -t -i:$PORT | xargs kill -9
-            echo "Process using port $PORT has been terminated."
-          else
-            echo "No process found using port $PORT."
-          fi
-          # 실행 권한 부여
+          sudo lsof -t -i:${{ secrets.SSH_PORT }} | xargs kill -9 || true  # 지정된 포트 점유 프로세스 종료
           chmod +x project.jar  # 실행 권한 부여
-          
-          # 애플리케이션 백그라운드 실행
-          echo "Starting the application..."
-          nohup java -jar project.jar > ./output.log 2>&1 &
-          echo "Application started. Logs will be written to ./output.log"
-          
-          # 로그 파일 모니터링 (선택 사항)
-          tail -f ./output.log  # 로그 확인 (배포 후 상태 체크)
-          
-          # 불필요한 폴더 삭제
+          nohup java -jar project.jar > ./output.log 2>&1 &  # 백그라운드 실행
           rm -rf /home/ncp-user/yomi-backend/tobe  # 불필요한 폴더 삭제
 
     - name: Remove Github Actions IP from NCP Security Group
