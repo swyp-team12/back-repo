@@ -33,8 +33,6 @@ jobs:
       run: |
         chmod -R 777 ~/ncp-cli
         cd ~/ncp-cli
-    
-        # ACG에 IP 추가
         ./ncloud vserver addAccessControlGroupInboundRule \
           --regionCode KR \
           --vpcNo ${{ secrets.NCP_VPC_NO }} \
@@ -59,7 +57,7 @@ jobs:
         echo "spring.application.name=yomi-backend" > src/main/resources/application.properties
         # Kakao 설정
         echo "kakao.apikey=815edb7e2bc243e280f527ca4de5117c" >> src/main/resources/application.properties
-        echo "kakao.redirect-uri=http://${{ secrets.EC2_HOST }}:8080/api/user/kakao/callback" >> src/main/resources/application.properties
+        echo "kakao.redirect-uri=http://${{ secrets.EC2_HOST }}:${{ secrets.SSH_PORT }}/api/user/kakao/callback" >> src/main/resources/application.properties
         # JWT 설정
         echo "jwt.secret.key=OssaD4FoPe7BreiqedEKuVmPXRbnvl24WCNUV7PIPmTpDZftVGC7Xrxd1UPxAw91YP8qlYK5lMlWwut44x0mg" >> src/main/resources/application.properties
         # DB 설정
@@ -74,7 +72,7 @@ jobs:
         echo "ncp.apiurl=${{ secrets.NCP_API_URL }}" >> src/main/resources/application.properties
         # Server 설정
         echo "server.address=0.0.0.0" >> src/main/resources/application.properties
-        echo "server.port=8080" >> src/main/resources/application.properties
+        echo "server.port=${{ secrets.SSH_PORT }}" >> src/main/resources/application.properties
 
     - name: 빌드만 수행하기 (테스트 제외)
       run: ./gradlew clean build -x test
@@ -106,7 +104,7 @@ jobs:
           mkdir /home/ncp-user/yomi-backend/current
           mv /home/ncp-user/yomi-backend/tobe/project.jar /home/ncp-user/yomi-backend/current/project.jar
           cd /home/ncp-user/yomi-backend/current
-          sudo lsof -t -i:8080 | xargs kill -9 || true  # 8080 포트 점유 프로세스 종료
+          sudo lsof -t -i:${{ secrets.SSH_PORT }} | xargs kill -9 || true  # 지정된 포트 점유 프로세스 종료
           chmod +x project.jar  # 실행 권한 부여
           nohup java -jar project.jar > ./output.log 2>&1 &  # 백그라운드 실행
           rm -rf /home/ncp-user/yomi-backend/tobe  # 불필요한 폴더 삭제
