@@ -118,7 +118,7 @@ jobs:
           cd /home/ncp-user/yomi-backend/current
           
           # 포트 점유 프로세스 종료
-          PORT=${{ secrets.SSH_PORT }}  # secrets에서 포트 번호 가져오기
+          PORT=8080  # 실제 포트 번호로 설정하세요
           echo "Killing process using port $PORT..."
           
           # lsof로 포트 점유 프로세스 확인 및 종료
