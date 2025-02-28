@@ -95,7 +95,7 @@ jobs:
     - name: SSH로 NCP에 접속하여 배포하기
       uses: appleboy/ssh-action@v1.0.3
       with:
-        host: ${{ secrets.NCP_HOST }}
+        host: ${{ secrets.EC2_HOST }}
         username: ${{ secrets.SSH_USERNAME }}
         password: ${{ secrets.SSH_PASSWORD }}  # SSH 비밀번호
         key: ${{ secrets.NCP_SSH_KEY }}
