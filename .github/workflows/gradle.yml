@@ -87,6 +87,7 @@ jobs:
       with:
         host: ${{ secrets.EC2_HOST }}  # NCP 호스트 주소
         username: ${{ secrets.SSH_USERNAME }} # SSH_USERNAME은 Secrets에 설정한 사용자 이름
+        password: ${{ secrets.SSH_PASSWORD }}  # SSH 비밀번호
         key: ${{ secrets.EC2_SSH_KEY }}  # NCP 비공개 키
         source: project.jar  # 빌드된 JAR 파일 경로
         target: /home/ncp-user/yomi-backend/tobe  # 배포될 폴더
@@ -96,6 +97,7 @@ jobs:
       with:
         host: ${{ secrets.NCP_HOST }}
         username: ${{ secrets.SSH_USERNAME }}
+        password: ${{ secrets.SSH_PASSWORD }}  # SSH 비밀번호
         key: ${{ secrets.NCP_SSH_KEY }}
         script_stop: true
         script: |
