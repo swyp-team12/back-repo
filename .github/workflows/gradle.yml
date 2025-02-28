@@ -102,17 +102,27 @@ jobs:
           echo "Starting deployment process..."
           
           # 기존 서버 중지
+          echo "Removing previous deployment..."
           rm -rf /home/ncp-user/yomi-backend/current
           mkdir /home/ncp-user/yomi-backend/current
-          mv /home/ncp-user/yomi-backend/tobe/project.jar /home/ncp-user/yomi-backend/current/project.jar
+          
+          # 배포할 파일 확인 후 이동
+          if [ -f /home/ncp-user/yomi-backend/tobe/project.jar ]; then
+            mv /home/ncp-user/yomi-backend/tobe/project.jar /home/ncp-user/yomi-backend/current/project.jar
+            echo "Moved project.jar to current directory."
+          else
+            echo "Error: project.jar not found in /home/ncp-user/yomi-backend/tobe."
+            exit 1
+          fi
+          
           cd /home/ncp-user/yomi-backend/current
           
           # 포트 점유 프로세스 종료
           PORT=${{ secrets.SSH_PORT }}  # secrets에서 포트 번호 가져오기
           echo "Killing process using port $PORT..."
           
-          # lsof로 포트 점유 프로세스 확인
-          if lsof -t -i:$PORT; then
+          # lsof로 포트 점유 프로세스 확인 및 종료
+          if lsof -t -i:$PORT > /dev/null; then
             sudo lsof -t -i:$PORT | xargs kill -9
             echo "Process using port $PORT has been terminated."
           else
