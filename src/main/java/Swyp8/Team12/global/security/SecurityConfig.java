@@ -54,7 +54,10 @@ public class SecurityConfig {
 
         configuration.setAllowedOrigins(List.of(
                 "http://localhost:3000",
-                "https://localhost:3000"
+                "https://localhost:3000",
+                "https://yomii.kr",
+                "https://www.yomii.kr",
+                "https://api.yomii.kr"
         ));
 
         // 모든 HTTP 메서드 허용
