@@ -54,9 +54,14 @@ public class SecurityConfig {
 
         configuration.setAllowedOrigins(List.of(
                 "http://localhost:3000",
-                "https://localhost:3000",
-                "https://localhost:17443",
-                "https://127.0.0.1:17443",
+                "http://localhost:16443",
+                "http://127.0.0.1:16443",
+                "http://192.168.0.16:16443",
+                "https://192.168.0.16:16443",
+                "http://localhost:17443",
+                "http://127.0.0.1:17443",
+                "http://192.168.0.16:17443",
+                "https://192.168.0.16:17443",
                 "https://yomii.kr",
                 "https://www.yomii.kr",
                 "https://api.yomii.kr"
