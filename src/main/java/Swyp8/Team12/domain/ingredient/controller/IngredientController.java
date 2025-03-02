@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/ingredient")
+@RequestMapping("/api/ingredient")
 public class IngredientController {
 
     private final IngredientService ingredientService;
