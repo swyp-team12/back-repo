@@ -5,6 +5,7 @@ import Swyp8.Team12.domain.ingredient.dto.IngredientResponseDTO;
 import Swyp8.Team12.domain.ingredient.service.IngredientService;
 import Swyp8.Team12.global.common.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/ingredient")
@@ -45,13 +47,17 @@ public class IngredientController {
     }
 
     /**
+     *
      * 새로운 재료 추가
+     *
      */
     @PostMapping
     public ResponseEntity<ApiResponse<?>> addIngredient(
             @RequestBody IngredientRequestDTO requestDTO,
             @AuthenticationPrincipal Long userId) {
+        log.info("서비스 시작전");
         IngredientResponseDTO savedIngredient = ingredientService.addIngredient(requestDTO, userId);
+        log.info("서비스 종료");
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.successWithDataAndMessage(savedIngredient, "재료 추가 성공"));
     }
