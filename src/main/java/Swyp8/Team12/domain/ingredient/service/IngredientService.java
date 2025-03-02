@@ -45,7 +45,9 @@ public class IngredientService {
     }
 
     /**
+     *
      * 새로운 재료 추가
+     *
      */
     @Transactional
     public IngredientResponseDTO addIngredient(IngredientRequestDTO requestDTO, Long userId) {
