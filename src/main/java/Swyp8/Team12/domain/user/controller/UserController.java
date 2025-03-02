@@ -38,7 +38,7 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.FOUND)  // 302 Found
                 .header(HttpHeaders.SET_COOKIE, accessTokenCookie.toString())
-                .header(HttpHeaders.LOCATION, "http://localhost:3000/home")  // 프론트엔드 리다이렉트 URL -> 배포 시에 도메인으로 수정
+                .header(HttpHeaders.LOCATION, "https://yomii.kr/home")  // 프론트엔드 리다이렉트 URL -> 배포 시에 도메인으로 수정
                 .body(ApiResponse.successWithMessage("로그인 성공"));
     }
 
