@@ -59,13 +59,12 @@ public class RecipeService {
         return new RecipeDetailResponseDTO(recipe);
     }
 
-    public List<RecipeDetailResponseDTO> findAllRecipes() {
-        List<Recipe> recipes = recipeRepository.findAll();
+    public List<RecipeDetailResponseDTO> findAllRecipes(Long userId) {
+        List<Recipe> recipes = recipeRepository.findByUser_Id(userId);
         return recipes.stream()
                 .map(RecipeDetailResponseDTO::new)
                 .collect(Collectors.toList());
     }
-
 
     public void scrapRecipe(Long recipeId) {
         Recipe recipe = recipeRepository.findById(recipeId)

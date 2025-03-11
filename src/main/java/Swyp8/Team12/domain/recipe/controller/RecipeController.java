@@ -51,8 +51,8 @@ public class RecipeController {
      *
      */
     @GetMapping
-    public ResponseEntity<ApiResponse<List<RecipeDetailResponseDTO>>> findAllRecipes() {
-        List<RecipeDetailResponseDTO> recipes = recipeService.findAllRecipes();
+    public ResponseEntity<ApiResponse<List<RecipeDetailResponseDTO>>> findAllRecipes(@AuthenticationPrincipal Long userId) {
+        List<RecipeDetailResponseDTO> recipes = recipeService.findAllRecipes(userId);
         return ResponseEntity.ok().body(ApiResponse.successResponse(recipes));
     }
 

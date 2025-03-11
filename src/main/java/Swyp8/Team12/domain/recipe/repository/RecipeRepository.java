@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     List<Recipe> findByIsScrapTrueAndUser_Id(Long userId);
+    List<Recipe> findByUser_Id(Long userId);
 }
