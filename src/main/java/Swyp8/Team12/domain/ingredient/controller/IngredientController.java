@@ -3,6 +3,7 @@ package Swyp8.Team12.domain.ingredient.controller;
 import Swyp8.Team12.domain.ingredient.dto.IngredientRequestDTO;
 import Swyp8.Team12.domain.ingredient.dto.IngredientResponseDTO;
 import Swyp8.Team12.domain.ingredient.service.IngredientService;
+
 import Swyp8.Team12.global.common.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -47,32 +49,50 @@ public class IngredientController {
     }
 
     /**
-     *
-     * 새로운 재료 추가
-     *
+     * 새로운 재료 추가 (Base64 이미지)
      */
     @PostMapping
     public ResponseEntity<ApiResponse<?>> addIngredient(
             @RequestBody IngredientRequestDTO requestDTO,
             @AuthenticationPrincipal Long userId) {
-        log.info("서비스 시작전");
-        IngredientResponseDTO savedIngredient = ingredientService.addIngredient(requestDTO, userId);
-        log.info("서비스 종료");
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.successWithDataAndMessage(savedIngredient, "재료 추가 성공"));
+        log.info("재료 추가 요청: userId={}, name={}, hasImage={}", 
+                userId, requestDTO.getName(), 
+                requestDTO.getIngImage() != null && !requestDTO.getIngImage().isEmpty());
+        
+        try {
+            IngredientResponseDTO savedIngredient = ingredientService.addIngredient(requestDTO, userId);
+            log.info("재료 추가 성공: ingId={}, imageUrl={}", 
+                    savedIngredient.getIngId(), savedIngredient.getIngImage());
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(ApiResponse.successWithDataAndMessage(savedIngredient, "재료 추가 성공"));
+        } catch (Exception e) {
+            log.error("재료 추가 실패: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ApiResponse.errorResponse("재료 추가 실패: " + e.getMessage()));
+        }
     }
 
     /**
-     * 기존 재료 정보 수정
+     * 기존 재료 정보 수정 (Base64 이미지)
      */
     @PutMapping("/{ingId}")
     public ResponseEntity<ApiResponse<?>> updateIngredient(
             @PathVariable int ingId,
             @RequestBody IngredientRequestDTO requestDTO,
             @AuthenticationPrincipal Long userId) {
-        IngredientResponseDTO updatedIngredient = ingredientService.updateIngredient(ingId, requestDTO, userId);
-        return ResponseEntity.ok()
-                .body(ApiResponse.successWithDataAndMessage(updatedIngredient, "재료 정보 수정 성공"));
+        log.info("재료 수정 요청: ingId={}, userId={}, name={}", 
+                ingId, userId, requestDTO.getName());
+        
+        try {
+            IngredientResponseDTO updatedIngredient = ingredientService.updateIngredient(ingId, requestDTO, userId);
+            log.info("재료 수정 성공: ingId={}", updatedIngredient.getIngId());
+            return ResponseEntity.ok()
+                    .body(ApiResponse.successWithDataAndMessage(updatedIngredient, "재료 정보 수정 성공"));
+        } catch (Exception e) {
+            log.error("재료 수정 실패: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ApiResponse.errorResponse("재료 수정 실패: " + e.getMessage()));
+        }
     }
 
     /**

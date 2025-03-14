@@ -14,7 +14,7 @@ public class IngredientRequestDTO {
     private String quantity;
     private Integer ingNum;
     private String userMemo;
-    private String ingImage;
+    private String ingImage;  // Base64 인코딩된 이미지 데이터
     private String storageType;
 
     public IngredientRequestDTO(String name, String expiryDate, String category, 

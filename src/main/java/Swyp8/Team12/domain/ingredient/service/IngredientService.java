@@ -6,11 +6,13 @@ import Swyp8.Team12.domain.ingredient.entity.Ingredient;
 import Swyp8.Team12.domain.ingredient.repository.IngredientRepository;
 import Swyp8.Team12.domain.user.entity.User;
 import Swyp8.Team12.domain.user.repository.UserRepository;
+import Swyp8.Team12.global.service.S3FileService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,6 +23,7 @@ public class IngredientService {
 
     private final IngredientRepository ingredientRepository;
     private final UserRepository userRepository;
+    private final S3FileService s3FileService;
 
     /**
      * 사용자 ID로 모든 재료 목록 조회
@@ -45,13 +48,17 @@ public class IngredientService {
     }
 
     /**
-     *
-     * 새로운 재료 추가
-     *
+     * 새로운 재료 추가 (Base64 이미지만 사용)
      */
     @Transactional
-    public IngredientResponseDTO addIngredient(IngredientRequestDTO requestDTO, Long userId) {
+    public IngredientResponseDTO addIngredient(IngredientRequestDTO requestDTO, Long userId) throws IOException {
         User user = getUserById(userId);
+        
+        // Base64 이미지 처리
+        String imageUrl = null;
+        if (requestDTO.getIngImage() != null && !requestDTO.getIngImage().isEmpty()) {
+            imageUrl = s3FileService.uploadBase64Image(requestDTO.getIngImage());
+        }
         
         Ingredient ingredient = Ingredient.builder()
                 .user(user)
@@ -61,7 +68,7 @@ public class IngredientService {
                 .quantity(requestDTO.getQuantity())
                 .ingNum(requestDTO.getIngNum())
                 .userMemo(requestDTO.getUserMemo())
-                .ingImage(requestDTO.getIngImage())
+                .ingImage(imageUrl) // S3에 업로드된 이미지 URL 저장
                 .storageType(requestDTO.getStorageType())
                 .build();
         
@@ -70,14 +77,23 @@ public class IngredientService {
     }
 
     /**
-     * 기존 재료 정보 수정
+     * 기존 재료 정보 수정 (Base64 이미지만 사용)
      */
     @Transactional
-    public IngredientResponseDTO updateIngredient(int ingId, IngredientRequestDTO requestDTO, Long userId) {
+    public IngredientResponseDTO updateIngredient(int ingId, IngredientRequestDTO requestDTO, Long userId) throws IOException {
         User user = getUserById(userId);
         Ingredient ingredient = ingredientRepository.findByIngIdAndUserAndIsDeleteFalse(ingId, user)
                 .orElseThrow(() -> new EntityNotFoundException("재료를 찾을 수 없습니다."));
         
+        // 이미지 처리
+        String imageUrl = ingredient.getIngImage(); // 기존 이미지 URL 유지
+        
+        // Base64 인코딩된 이미지가 있는 경우 업데이트
+        if (requestDTO.getIngImage() != null && !requestDTO.getIngImage().isEmpty()) {
+            imageUrl = s3FileService.uploadBase64Image(requestDTO.getIngImage());
+        }
+        
+        // 재료 정보 업데이트
         ingredient.update(
                 requestDTO.getName(),
                 requestDTO.getExpiryDate(),
@@ -85,7 +101,7 @@ public class IngredientService {
                 requestDTO.getQuantity(),
                 requestDTO.getIngNum(),
                 requestDTO.getUserMemo(),
-                requestDTO.getIngImage(),
+                imageUrl,
                 requestDTO.getStorageType()
         );
         
