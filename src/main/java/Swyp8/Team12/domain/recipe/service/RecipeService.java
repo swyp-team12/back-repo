@@ -28,7 +28,7 @@ public class RecipeService {
     private final RecipeIngredientService recipeIngredientService;
 
     public void save(List<RecipeCreateResponseDTO> recipeList, Long userId) {
-        User user = userService.getUserById(userId); // 사용자 정보 미리 가져오기
+        User user = userService.getUserById(userId);
 
         for (RecipeCreateResponseDTO recipeDTO : recipeList) {
             Recipe recipe = Recipe.builder()

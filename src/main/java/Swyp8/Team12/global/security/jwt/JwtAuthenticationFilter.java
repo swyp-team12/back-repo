@@ -51,7 +51,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     Long userId = jwtTokenProvider.getUserIdFromRefreshToken(refreshToken);
                     String newAccessToken = jwtTokenProvider.createAccessToken(userId);
 
-                    // 🔹 쿠키 설정 시 response.addHeader() 대신 ResponseCookie 사용
                     ResponseCookie newAccessTokenCookie = jwtCookieUtil.createAccessTokenCookie(newAccessToken);
                     response.setHeader(HttpHeaders.SET_COOKIE, newAccessTokenCookie.toString());
 
@@ -73,7 +72,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         }
 
-        // 🔹 accessToken이 없고 refreshToken만 있는 경우, 새로운 accessToken 발급
         if (accessToken == null && refreshToken != null && jwtTokenProvider.validateRefreshToken(refreshToken)) {
             Long userId = jwtTokenProvider.getUserIdFromRefreshToken(refreshToken);
             String newAccessToken = jwtTokenProvider.createAccessToken(userId);
