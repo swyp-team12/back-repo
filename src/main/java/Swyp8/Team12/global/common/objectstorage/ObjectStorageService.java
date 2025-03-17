@@ -40,7 +40,7 @@ public class ObjectStorageService {
         this.s3 = AmazonS3ClientBuilder.standard()
                 .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endPoint, region))
                 .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
-                .withPathStyleAccessEnabled(true) // 경로 스타일 접근 사용
+                .withPathStyleAccessEnabled(true)
                 .build();
     }
 
@@ -57,7 +57,7 @@ public class ObjectStorageService {
                     .withCannedAcl(CannedAccessControlList.PublicRead));
             return savePath;
         } catch (SdkClientException e) {
-            throw new IOException("Error uploading file to S3: " + e.getMessage(), e);
+            throw new IOException(e.getMessage(), e);
         }
     }
 
@@ -70,7 +70,7 @@ public class ObjectStorageService {
                 s3.deleteObject(bucketName, objectSummary.getKey());
             }
         } catch (SdkClientException e) {
-            throw new RuntimeException("Error deleting files from S3: " + e.getMessage(), e);
+            throw new RuntimeException(e.getMessage(), e);
         }
     }
 }

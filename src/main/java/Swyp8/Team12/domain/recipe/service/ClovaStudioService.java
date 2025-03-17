@@ -70,7 +70,6 @@ public class ClovaStudioService {
             // JSON 문자열을 List<Map<String, Object>>로 변환
             List<Map<String, Object>> recipes = objectMapper.readValue(content, new TypeReference<List<Map<String, Object>>>() {});
 
-            // List<RecipeResponseDTO>로 변환
             List<RecipeCreateResponseDTO> recipeList = new ArrayList<>();
             for (Map<String, Object> recipe : recipes) {
                 RecipeCreateResponseDTO dto = new RecipeCreateResponseDTO();
